@@ -1,6 +1,7 @@
 package hxgemini_api.utils;
 
-import hxgemini_api.backend.Types;
+import hxgemini_api.types.SafetySetting;
+import hxgemini_api.types.GenerationConfig;
 
 class Help
 {
