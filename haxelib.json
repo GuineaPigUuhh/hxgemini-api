@@ -1,0 +1,11 @@
+{
+  "name": "hxgemini-api",
+  "url": "https://github.com/GuineaPigUuhh/hxgemini-api",
+  "license": "MIT",
+  "tags": ["api"],
+  "description": "Haxe functions to use the Google Generative IA Integration.",
+  "version": "1.0.0",
+  "releasenote": "Initial release.",
+  "contributors": ["GuineaPigUuhh"],
+  "dependencies": {}
+}
