@@ -24,4 +24,4 @@ trace(response.text);
 
 ## Contribute to the API!
 > [!NOTE]
-> If you want to add something new to the AP, **make a Pull Request!**
+> If you want to add something new to the API, **make a Pull Request!**
