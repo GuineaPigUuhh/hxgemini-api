@@ -3,7 +3,7 @@
 Haxe functions to use the [Gemini IA Integration](https://gemini.google.com/app).
 
 > [!WARNING]
-> **This is not an official Google Library,** there is still a lot missing from the API. This Library will not be updated frequently!
+> **This is not an official Google Library**, there is still a lot missing from the API. This Library will not be updated frequently!
 
 ## Installation
 ```bash
