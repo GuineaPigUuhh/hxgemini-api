@@ -1,5 +1,6 @@
 package hxgemini_api;
 
+import hxgemini_api.types.ModelArgs;
 import haxe.Http;
 import haxe.Json;
 import haxe.io.Path;
@@ -17,6 +18,11 @@ class GenerativeAI
 	public static function configure(Key:String)
 	{
 		GOOGLE_API_KEY = Key;
+	}
+
+	public static function model(Model_Name = "gemini-pro", ?Model_Args:ModelArgs)
+	{
+		return new GenerativeModel(GOOGLE_API_KEY, Model_Name, Model_Args);
 	}
 
 	public static function request(url:String, post:Bool = false, data:Null<Any> = null)

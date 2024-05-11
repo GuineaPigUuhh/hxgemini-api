@@ -5,10 +5,10 @@ class Main
 {
 	static function main()
 	{
-		GenIA.configure('key-here');
+		GenAI.configure('key-here');
 
 		var model = new Model('gemini-pro');
-		var response = model.generate_content('Make a presentation about yourself');
+		var response = model.generate_content({contents: 'Make a presentation about yourself'});
 		trace(response.text);
 	}
 }

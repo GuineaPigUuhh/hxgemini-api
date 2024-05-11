@@ -1,5 +1,0 @@
--cp source
--D analyzer-optimize
--main Main
---library hxgemini-api
---interp
