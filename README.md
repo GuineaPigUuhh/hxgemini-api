@@ -25,7 +25,7 @@ GenAI.configure('key-here');
 
 var model = GenAI.model('gemini-pro');
 var response = model.generate_content('What is the meaning of life?');
-trace(response.text);
+trace(response.candidates[0].content.parts[0].text);
 ```
 
 ## Contribute to the API!
