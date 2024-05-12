@@ -1,7 +1,7 @@
 package hxgemini_api;
 
+import hxgemini_api.types.Tools.Tool;
 import hxgemini_api.types.ToolConfig;
-import haxe.Json;
 import hxgemini_api.GenerativeAI;
 import hxgemini_api.types.ModelArgs;
 import hxgemini_api.types.ContentArgs;
@@ -16,11 +16,9 @@ class GenerativeModel
 	var model:String = null;
 	var safety_settings:Array<SafetySetting> = null;
 	var generation_config:GenerationConfig = null;
-	var tools:Array<Dynamic> = null;
+	var tools:Array<Tool> = null;
 	var tool_config:ToolConfig = null;
 	var system_instruction:String = null;
-
-	var history:Array<Dynamic> = null;
 
 	var Key:String = null;
 
@@ -41,29 +39,11 @@ class GenerativeModel
 	/**
 	 * Start a chat with the AI.
 	 * @param history is your conversation history.
+	 * @return new ChatSession
 	 */
 	public function start_chat(history:Array<Dynamic>)
 	{
-		this.history = history;
-	}
-
-	/**
-	 * send a message to AI. 
-	 * @param Contents content you will send.
-	 * @param Args are the extra parameters for more specific things.
-	 * @return Dynamic
-	 */
-	public function send_message(Contents:Dynamic, ?Args:ContentArgs):Dynamic
-	{
-		if (history == null)
-			throw new Exception("You didn't start a chat!");
-		Args = Args ?? {};
-
-		history_new("user", [{"text": Contents}]);
-		var response:Dynamic = generate_content(Contents, Args);
-		history_new("model", [{"text": response.text}]);
-
-		return response;
+		return new ChatSession(this, history);
 	}
 
 	/**
@@ -86,9 +66,8 @@ class GenerativeModel
 			data.system_instruction = {
 				"parts": {"text": Args.system_instruction ?? system_instruction}
 			};
-		var response:Dynamic = GenerativeAI.request(get_rest(Args.stream), true, data);
 
-		return response;
+		return GenerativeAI.request(get_rest(Args.stream), true, data);
 	}
 
 	// * Functions that are just utilities
@@ -116,13 +95,5 @@ class GenerativeModel
 		var type = stream ? 'streamGenerateContent' : 'generateContent';
 		var models = 'v1beta/models/';
 		return Path.join([models, '$model:$type?key=${Key}']);
-	}
-
-	private function history_new(role:String, parts:Array<Dynamic>)
-	{
-		history.push({
-			"role": role,
-			"parts": parts
-		});
 	}
 }
