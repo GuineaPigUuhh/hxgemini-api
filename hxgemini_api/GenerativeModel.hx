@@ -1,5 +1,6 @@
 package hxgemini_api;
 
+import hxgemini_api.types.ToolConfig;
 import haxe.Json;
 import hxgemini_api.GenerativeAI;
 import hxgemini_api.types.ModelArgs;
@@ -16,7 +17,7 @@ class GenerativeModel
 	var safety_settings:Array<SafetySetting> = null;
 	var generation_config:GenerationConfig = null;
 	var tools:Array<Dynamic> = null;
-	var tool_config:Dynamic = null;
+	var tool_config:ToolConfig = null;
 	var system_instruction:String = null;
 
 	var history:Array<Dynamic> = null;
