@@ -2,7 +2,9 @@ package hxgemini_api.types;
 
 typedef ModelArgs =
 {
-	@:optional var safety_settings:Array<SafetySetting>;
-	@:optional var generation_config:GenerationConfig;
-	@:optional var tools:Array<Dynamic>;
+	?safety_settings:Array<SafetySetting>,
+	?generation_config:GenerationConfig,
+	?tools:Array<Dynamic>,
+	?tool_config:Dynamic,
+	?system_instruction:String
 }

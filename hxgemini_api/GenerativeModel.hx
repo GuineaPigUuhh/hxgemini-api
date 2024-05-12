@@ -6,40 +6,44 @@ import hxgemini_api.types.ModelArgs;
 import hxgemini_api.types.ContentArgs;
 import hxgemini_api.types.SafetySetting;
 import hxgemini_api.types.GenerationConfig;
-import hxgemini_api.utils.Help;
+import hxgemini_api.utils.Dummies;
 import haxe.Exception;
 import haxe.io.Path;
 
 class GenerativeModel
 {
-	private var model:String = null;
-	private var safety_settings:Array<SafetySetting> = null;
-	private var generation_config:GenerationConfig = null;
+	var model:String = null;
+	var safety_settings:Array<SafetySetting> = null;
+	var generation_config:GenerationConfig = null;
+	var tools:Array<Dynamic> = null;
+	var tool_config:Dynamic = null;
+	var system_instruction:String = null;
 
-	private var history:Array<Dynamic> = null;
+	var history:Array<Dynamic> = null;
 
-	private var Key:String = null;
+	var Key:String = null;
 
 	public function new(Key:String, ?Model:String = 'gemini-pro', ?Args:ModelArgs)
 	{
 		var model_args = Args ?? {};
 
-		// * Model config
 		this.Key = Key;
 		this.model = Model;
 
-		// ? Extra params
-		this.safety_settings = model_args.safety_settings ?? Help.dummy_safety_settings();
-		this.generation_config = model_args.generation_config ?? Help.dummy_generation_config();
+		this.safety_settings = model_args.safety_settings ?? Dummies.safety_settings;
+		this.generation_config = model_args.generation_config ?? Dummies.generation_config;
+		this.tools = model_args.tools ?? [];
+		this.tool_config = model_args.tool_config ?? {};
+		this.system_instruction = model_args.system_instruction;
 	}
 
 	/**
 	 * Start a chat with the AI.
 	 * @param history is your conversation history.
 	 */
-	public function start_chat(?history:Array<Dynamic>)
+	public function start_chat(history:Array<Dynamic>)
 	{
-		this.history = history ?? [];
+		this.history = history;
 	}
 
 	/**
@@ -70,12 +74,18 @@ class GenerativeModel
 	public function generate_content(Contents:Dynamic, ?Args:ContentArgs):Dynamic
 	{
 		Args = Args ?? {};
-		var response:Dynamic = GenerativeAI.request(get_rest(Args.stream), true, {
-			"contents": parse_contents(Contents),
-			"safetySettings": Args.safety_settings ?? safety_settings,
-			"generationConfig": Args.generation_config ?? generation_config
-		});
-		response.text = response.candidates[0].content.parts[0].text;
+		var data:Dynamic = {
+			contents: parse_contents(Contents),
+			safetySettings: Args.safety_settings ?? safety_settings,
+			tools: Args.tools ?? tools,
+			tool_config: Args.tool_config ?? tool_config,
+			generationConfig: Args.generation_config ?? generation_config
+		};
+		if (Args.system_instruction != null || system_instruction != null)
+			data.system_instruction = {
+				"parts": {"text": Args.system_instruction ?? system_instruction}
+			};
+		var response:Dynamic = GenerativeAI.request(get_rest(Args.stream), true, data);
 
 		return response;
 	}
@@ -91,7 +101,6 @@ class GenerativeModel
 		catch (e)
 			return [
 				{
-					"role": "user",
 					"parts": [
 						{
 							"text": Contents

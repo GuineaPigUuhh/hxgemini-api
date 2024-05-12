@@ -4,6 +4,6 @@ import hxgemini_api.types.harm.*;
 
 typedef SafetySetting =
 {
-	var category:HarmCategory;
-	var threshold:HarmBlockThreshold;
+	category:HarmCategory,
+	threshold:HarmBlockThreshold
 }

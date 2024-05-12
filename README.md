@@ -10,6 +10,13 @@ Haxe functions to use the [Gemini IA Integration](https://gemini.google.com/app)
 haxelib git hxgemini-api https://github.com/GuineaPigUuhh/hxgemini-api.git
 ```
 
+## How to list model names
+```haxe
+for (i in GenAI.list_models())
+	if (i.supportedGenerationMethods.contains('generateContent'))
+		trace(i.name);
+```
+
 ## Usage Exemple
 ```haxe
 import hxgemini_api.GenerativeAI as GenAI;
