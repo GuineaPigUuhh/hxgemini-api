@@ -14,6 +14,5 @@ Haxe functions to use the [Gemini IA Integration](https://gemini.google.com/app)
 haxelib git hxgemini-api https://github.com/GuineaPigUuhh/hxgemini-api.git
 ```
 
-## Contribute to the API!
-> [!NOTE]
-> If you want to add something new to the API, **make a Pull Request!**
+## Important!
+**have a look in the [docs](docs) folder**, there are lots of things in there you might want to know about.
