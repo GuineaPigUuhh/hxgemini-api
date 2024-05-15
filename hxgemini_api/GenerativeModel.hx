@@ -75,20 +75,15 @@ class GenerativeModel
 
 	private function parse_contents(Contents:Dynamic):Dynamic
 	{
-		try
-		{
-			return cast(Contents, Array<Dynamic>);
-		}
-		catch (e)
-			return [
-				{
-					"parts": [
-						{
-							"text": Contents
-						}
-					]
-				}
-			];
+		return [
+			{
+				"parts": [
+					{
+						"text": Contents
+					}
+				]
+			}
+		];
 	}
 
 	private function get_rest(?stream = false)
