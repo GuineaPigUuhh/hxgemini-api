@@ -46,7 +46,7 @@ class GenerativeAI
 		return urlr.models;
 	}
 
-	public static function request(url:String, post:Bool = false, data:Null<Any> = null)
+	public static function request(url:String, post:Bool = false, data:Null<Any> = null):Dynamic
 	{
 		var api = new Http(Path.join([apiUrl, url]));
 		api.setHeader("Content-Type", "application/json");
