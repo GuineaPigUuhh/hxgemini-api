@@ -54,6 +54,11 @@ class GenerativeAI
 			api.setPostData(Json.stringify(data));
 		api.request(post);
 
-		return Json.parse(api.responseData);
+		try
+		{
+			return Json.parse(api.responseData);
+		}
+		catch (e)
+			return api.responseData;
 	}
 }
