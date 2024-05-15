@@ -73,17 +73,22 @@ class GenerativeModel
 
 	// * Functions that are just utilities
 
-	private function parse_contents(Contents:Dynamic):Dynamic
+	private function parse_contents(Contents:Dynamic):Array<Dynamic>
 	{
-		return [
-			{
-				"parts": [
-					{
-						"text": Contents
-					}
-				]
-			}
-		];
+		try
+		{
+			return cast(Contents, Array<Dynamic>);
+		}
+		catch (e)
+			return [
+				{
+					"parts": [
+						{
+							"text": Contents
+						}
+					]
+				}
+			];
 	}
 
 	private function get_rest(?stream = false)
