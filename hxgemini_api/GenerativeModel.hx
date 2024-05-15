@@ -66,8 +66,9 @@ class GenerativeModel
 			data.system_instruction = {
 				"parts": {"text": Args.system_instruction ?? system_instruction}
 			};
-
-		return GenerativeAI.request(get_rest(Args.stream), true, data);
+		var response = GenerativeAI.request(get_rest(Args.stream), true, data);
+		response.text = response.candidates[0].content.parts[0]?.text;
+		return response;
 	}
 
 	// * Functions that are just utilities
