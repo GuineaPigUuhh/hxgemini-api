@@ -75,13 +75,12 @@ class GenerativeModel
 
 	private function parse_contents(Contents:Dynamic):Array<Dynamic>
 	{
-		var parsed:Array<Dynamic>;
 		try
 		{
-			parsed = cast(Contents, Array<Dynamic>);
+			return cast(Contents, Array<Dynamic>);
 		}
 		catch (e)
-			parsed = [
+			return [
 				{
 					"parts": [
 						{
@@ -90,7 +89,6 @@ class GenerativeModel
 					]
 				}
 			];
-		return parsed;
 	}
 
 	private function get_rest(?stream = false)
