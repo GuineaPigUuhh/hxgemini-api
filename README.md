@@ -13,6 +13,3 @@ Haxe functions to use the [Gemini IA Integration](https://gemini.google.com/app)
 ```bash
 haxelib git hxgemini-api https://github.com/GuineaPigUuhh/hxgemini-api.git
 ```
-
-## Important!
-**have a look in the [docs](docs) folder**, there are lots of things in there you might want to know about.
