@@ -1,39 +1,34 @@
 package hxgemini_api;
 
+import hxgemini_api.requests.GenerateContentRequest;
+import haxe.Http;
+import haxe.Json;
+import haxe.Rest;
 import hxgemini_api.types.Tools.Tool;
 import hxgemini_api.types.ToolConfig;
 import hxgemini_api.GenerativeAI;
 import hxgemini_api.types.ModelArgs;
-import hxgemini_api.types.ContentArgs;
 import hxgemini_api.types.SafetySetting;
 import hxgemini_api.types.GenerationConfig;
 import hxgemini_api.utils.Dummies;
+import hxgemini_api.parts.*;
 import haxe.Exception;
-import haxe.io.Path;
 
 class GenerativeModel
 {
-	var model:String = null;
 	var safety_settings:Array<SafetySetting> = null;
 	var generation_config:GenerationConfig = null;
 	var tools:Array<Tool> = null;
 	var tool_config:ToolConfig = null;
-	var system_instruction:String = null;
-
+	var system_instruction:ContentData = null;
+	
+	var Model:String = null;
 	var Key:String = null;
 
 	public function new(Key:String, ?Model:String = 'gemini-pro', ?Args:ModelArgs)
 	{
-		var model_args = Args ?? {};
-
 		this.Key = Key;
-		this.model = Model;
-
-		this.safety_settings = model_args.safety_settings ?? Dummies.safety_settings;
-		this.generation_config = model_args.generation_config ?? Dummies.generation_config;
-		this.tools = model_args.tools ?? [];
-		this.tool_config = model_args.tool_config ?? {};
-		this.system_instruction = model_args.system_instruction;
+		this.Model = Model;
 	}
 
 	/**
@@ -41,60 +36,36 @@ class GenerativeModel
 	 * @param history is your conversation history.
 	 * @return new ChatSession
 	 */
-	public function start_chat(history:Array<Dynamic>)
+	public function start_chat(history:Array<ContentData>)
 	{
 		return new ChatSession(this, history);
 	}
 
 	/**
 	 * make AI generate content
-	 * @param Contents content that you will send the AI to generate.
-	 * @param Args are the extra parameters for more specific things.
+	 * @param Parts content that you will send the AI to generate.
 	 * @return Dynamic
 	 */
-	public function generate_content(Contents:Dynamic, ?Args:ContentArgs):Dynamic
+	public function generate_content(...Parts:IPart):Dynamic
+		return do_content_request(false,new ContentData('user',...Parts));
+
+	private function do_content_request(Stream:Bool, ...Contents:ContentData):Dynamic
 	{
-		Args = Args ?? {};
-		var data:Dynamic = {
-			contents: parse_contents(Contents),
-			safetySettings: Args.safety_settings ?? safety_settings,
-			tools: Args.tools ?? tools,
-			tool_config: Args.tool_config ?? tool_config,
-			generationConfig: Args.generation_config ?? generation_config
+		var Data:Dynamic = {
+			safety_settings: safety_settings,
+			tools: tools,
+			tool_config: tool_config,
+			generation_config: generation_config,
+			system_instruction: system_instruction,
+			contents: Contents.toArray()
 		};
-		if (Args.system_instruction != null || system_instruction != null)
-			data.system_instruction = {
-				"parts": {"text": Args.system_instruction ?? system_instruction}
-			};
-		var response = GenerativeAI.request(get_rest(Args.stream), true, data);
-		response.text = response.candidates[0].content.parts[0]?.text;
-		return response;
-	}
 
-	// * Functions that are just utilities
+		var request = new GenerateContentRequest(Model, Stream, Data);
+		var response = GenerativeAI.do_request(request);
 
-	private function parse_contents(Contents:Dynamic):Array<Dynamic>
-	{
-		try
-		{
-			return cast(Contents, Array<Dynamic>);
-		}
-		catch (e)
-			return [
-				{
-					"parts": [
-						{
-							"text": Contents
-						}
-					]
-				}
-			];
-	}
+		var json:Dynamic = Json.parse(response.data);
+		//json.text = json?.candidates[0].content.parts[0].text;
 
-	private function get_rest(?stream = false)
-	{
-		var type = stream ? 'streamGenerateContent' : 'generateContent';
-		var models = 'v1beta/models/';
-		return Path.join([models, '$model:$type?key=${Key}']);
+		return json;
 	}
 }

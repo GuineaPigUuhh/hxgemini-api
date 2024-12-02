@@ -1,3 +1,4 @@
+import hxgemini_api.parts.TextPart;
 import hxgemini_api.GenerativeAI as GenAI;
 
 class Code
@@ -6,10 +7,8 @@ class Code
 	{
 		GenAI.configure('key-here');
 
-		var model = GenAI.model('gemini-1.5-pro-latest', {});
-		final response = model.generate_content('Hi!');
-		final responsetxt = response.candidates[0].content.parts[0].text;
-
-		trace(responsetxt);
+		var model = GenAI.model('gemini-1.5-flash');
+		final response = model.generate_content(new TextPart('Hi!'));
+		Sys.println(response?.text);
 	}
 }

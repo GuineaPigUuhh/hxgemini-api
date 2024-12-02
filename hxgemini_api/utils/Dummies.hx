@@ -1,5 +1,7 @@
 package hxgemini_api.utils;
 
+import hxgemini_api.types.ToolConfig;
+import hxgemini_api.types.Tools.Tool;
 import hxgemini_api.types.SafetySetting;
 import hxgemini_api.types.GenerationConfig;
 
@@ -31,4 +33,8 @@ class Dummies
 		topP: 0.8,
 		topK: 10
 	};
+
+	public static final tools:Array<Tool> = [];
+	public static final tools_config:ToolConfig = {};
+	public static final system_instruction:Dynamic = null;
 }

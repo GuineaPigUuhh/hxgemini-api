@@ -1,5 +1,6 @@
 package hxgemini_api.types;
 
+import hxgemini_api.ContentData;
 import hxgemini_api.types.Tools.Tool;
 
 typedef ModelArgs =
@@ -8,5 +9,5 @@ typedef ModelArgs =
 	?generation_config:GenerationConfig,
 	?tools:Array<Tool>,
 	?tool_config:ToolConfig,
-	?system_instruction:String
+	?system_instruction:ContentData
 }

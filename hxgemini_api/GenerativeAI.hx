@@ -1,21 +1,27 @@
 package hxgemini_api;
 
+import hxgemini_api.requests.ModelsRequest;
+import hxgemini_api.Response;
+import hxgemini_api.requests.IRequest;
+import hxgemini_api.types.APIVersion;
 import hxgemini_api.types.ModelArgs;
 import haxe.Http;
 import haxe.Json;
 import haxe.io.Path;
+import haxe.io.BytesOutput;
 
 using StringTools;
 
 class GenerativeAI
 {
 	public static final apiUrl = "https://generativelanguage.googleapis.com";
-
+	
 	/**
 	 * for the Library to work you have to have the AI Key!
 	 * @see https://aistudio.google.com/app/apikey
 	 */
-	public static var API_KEY:String = null;
+	 public static var API_KEY:String = null;
+	 public static var API_VERSION:APIVersion = API_VERSION_1_BETA;
 
 	/**
 	 * is used to configure the Library.
@@ -42,18 +48,27 @@ class GenerativeAI
 	 */
 	public static function list_models():Array<Dynamic>
 	{
-		var urlr = request('v1beta/models?key=$API_KEY');
-		return urlr.models;
+		var request = new ModelsRequest();
+		var response = do_request(request);
+		return Json.parse(response.data).models;
 	}
 
-	public static function request(url:String, post:Bool = false, data:Null<Any> = null):Dynamic
+	public static function do_request(Request:IRequest):Response
 	{
-		var api = new Http(Path.join([apiUrl, url]));
-		api.setHeader("Content-Type", "application/json");
-		if (data != null)
-			api.setPostData(Json.stringify(data));
-		api.request(post);
+		var r = new Http(formatURL(Request));
+		r.setHeader("content-type", "application/json");
+		r.setHeader("x-goog-api-key", API_KEY);
+		if (Request.getData() != null) r.setPostData(Json.stringify(Request.getData()));
 
-		return Json.parse(api.responseData);
+		var output = new BytesOutput();
+
+		r.customRequest(Request.getMethod() == 'POST', output, null, Request.getMethod());
+
+		return new Response(output);
+	}
+
+	public static function formatURL(Request:IRequest) 
+	{
+		return Path.join([apiUrl, API_VERSION, Request.getOperation()]);
 	}
 }

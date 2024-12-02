@@ -1,18 +1,20 @@
 package hxgemini_api;
 
 import haxe.Exception;
-import hxgemini_api.types.ContentArgs;
+import hxgemini_api.ContentData;
+import hxgemini_api.parts.*;
+import hxgemini_api.GenerativeModel;
 
 class ChatSession
 {
-	var history:Array<Dynamic> = null;
+	var history:Array<ContentData> = null;
 	var parent:GenerativeModel;
 
 	/**
 	 * @param parent
 	 * @param history is your conversation history.
 	 */
-	public function new(parent:GenerativeModel, history:Array<Dynamic>)
+	public function new(parent:GenerativeModel, history:Array<ContentData>)
 	{
 		this.parent = parent;
 		this.history = history;
@@ -24,24 +26,18 @@ class ChatSession
 	 * @param Args are the extra parameters for more specific things.
 	 * @return Dynamic
 	 */
-	public function send_message(Contents:Dynamic, ?Args:ContentArgs):Dynamic
+	public function send_message(...Parts:IPart):Dynamic
 	{
 		if (history == null)
 			throw new Exception("You didn't start a chat!");
-		Args = Args ?? {};
 
-		history_new("user", [{"text": Contents}]);
-		var response:Dynamic = parent.generate_content(Contents, Args);
-		history_new("model", [{"text": response.text}]);
+		history.push(new ContentData("user", ...Parts));
+
+		@:privateAccess
+		var response:Dynamic = parent.do_content_request(false,...history);
+
+		history.push(new ContentData("model", new TextPart(response.text)));
 
 		return response;
-	}
-
-	private function history_new(role:String, parts:Array<Dynamic>)
-	{
-		history.push({
-			"role": role,
-			"parts": parts
-		});
 	}
 }
