@@ -1,6 +1,8 @@
 package hxgemini_api.requests;
 
-class GenerateContentRequest implements IRequest
+import haxe.Exception;
+
+class GenerateContentRequest extends BaseRequest
 {
     var model:String;
     var data:Dynamic;
@@ -13,8 +15,7 @@ class GenerateContentRequest implements IRequest
         data = Data;
     }
     
-    public function getOperation():String   return '/models/$model:${stream ? 'streamGenerateContent' : 'generateContent'}';
-    public function getMethod():String  return 'POST';
-    public function getData():String  return data;
-    public function getPayload():String return '';
+    public override function getOperation():String   return 'models/$model:${stream ? 'streamGenerateContent' : 'generateContent'}';
+    public override function getMethod():String  return 'POST';
+    public override function getData():String  return data;
 }

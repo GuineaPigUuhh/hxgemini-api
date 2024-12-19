@@ -2,7 +2,7 @@ package hxgemini_api;
 
 import hxgemini_api.requests.ModelsRequest;
 import hxgemini_api.Response;
-import hxgemini_api.requests.IRequest;
+import hxgemini_api.requests.BaseRequest;
 import hxgemini_api.types.APIVersion;
 import hxgemini_api.types.ModelArgs;
 import haxe.Http;
@@ -33,13 +33,13 @@ class GenerativeAI
 	}
 
 	/**
-	 * @param Model_Name Name of the Model you are going to use
-	 * @param Model_Args are extra parameters for more specific things.
+	 * @param Name Name of the Model you are going to use
+	 * @param Args are extra parameters for more specific things.
 	 * @return new GenerativeModel
 	 */
-	public static function model(Model_Name = "gemini-pro", ?Model_Args:ModelArgs)
+	public static function model(Name = "gemini-pro", ?Args:ModelArgs)
 	{
-		return new GenerativeModel(API_KEY, Model_Name, Model_Args);
+		return new GenerativeModel(API_KEY, Name, Args);
 	}
 
 	/**
@@ -53,21 +53,26 @@ class GenerativeAI
 		return Json.parse(response.data).models;
 	}
 
-	public static function do_request(Request:IRequest):Response
+	public static function do_request(Request:BaseRequest):Response
 	{
-		var r = new Http(formatURL(Request));
-		r.setHeader("content-type", "application/json");
-		r.setHeader("x-goog-api-key", API_KEY);
-		if (Request.getData() != null) r.setPostData(Json.stringify(Request.getData()));
+		var response = new Http(formatURL(Request));
+		response.setHeader("content-type", "application/json");
+		response.setHeader("x-goog-api-key", API_KEY);
+
+		if (Request.getData() != null) 
+			response.setPostData(Json.stringify(Request.getData()));
 
 		var output = new BytesOutput();
 
-		r.customRequest(Request.getMethod() == 'POST', output, null, Request.getMethod());
+		response.onStatus = Request.onStatus;
+		response.onError = Request.onError;
+
+		response.customRequest(Request.getMethod() == 'POST', output, null, Request.getMethod());
 
 		return new Response(output);
 	}
 
-	public static function formatURL(Request:IRequest) 
+	public static function formatURL(Request:BaseRequest) 
 	{
 		return Path.join([apiUrl, API_VERSION, Request.getOperation()]);
 	}

@@ -1,10 +1,7 @@
 package hxgemini_api.requests;
 
-class ModelsRequest implements IRequest 
+class ModelsRequest extends BaseRequest
 {
     public function new() {}
-    public function getOperation():String   return 'models';
-    public function getMethod():String  return 'GET';
-    public function getData():String  return null;
-    public function getPayload():String return '';
+    public override function getOperation():String return 'models';
 }

@@ -14,16 +14,15 @@ class ChatSession
 	 * @param parent
 	 * @param history is your conversation history.
 	 */
-	public function new(parent:GenerativeModel, history:Array<ContentData>)
+	public function new(Parent:GenerativeModel, History:Array<ContentData>)
 	{
-		this.parent = parent;
-		this.history = history;
+		this.parent = Parent;
+		this.history = History;
 	}
 
 	/**
 	 * send a message to AI. 
-	 * @param Contents content you will send.
-	 * @param Args are the extra parameters for more specific things.
+	 * @param Parts content that you will send the AI to generate.
 	 * @return Dynamic
 	 */
 	public function send_message(...Parts:IPart):Dynamic

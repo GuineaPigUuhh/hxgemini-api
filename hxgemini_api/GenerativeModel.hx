@@ -64,7 +64,7 @@ class GenerativeModel
 		var response = GenerativeAI.do_request(request);
 
 		var json:Dynamic = Json.parse(response.data);
-		//json.text = json?.candidates[0].content.parts[0].text;
+		json.text = json?.candidates[0].content.parts[0].text;
 
 		return json;
 	}
